@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tujuh Tiga Puluh Community — House of Sports & Cards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2f3b4a;
+    --ink: #e8eef5;
+    --muted: #8899aa;
+    --merah: #e63946;
+    --merah-terang: #ff4d5e;
+    --biru: #2a9d8f;
+    --biru-terang: #2ec4b6;
+    --emas: #ffd166;
+    --hijau: #06d6a0;
+    --ungu: #9b6bcc;
+    --ungu-terang: #b98ee6;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 15% 5%, rgba(230,57,70,0.10), transparent 45%),
+      radial-gradient(circle at 85% 95%, rgba(42,157,143,0.10), transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(255,209,102,0.03), transparent 60%);
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,20,25,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--emas), #f4a825);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    box-shadow: 0 4px 16px rgba(255,209,102,0.3);
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .brand-text strong {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .brand-text small {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--emas); }
+  .nav-links a.cta {
+    background: var(--emas);
+    color: #1a1a1a;
+    padding: 9px 20px;
+    border-radius: 10px;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .nav-links a.cta:hover {
+    filter: brightness(1.1);
+    color: #1a1a1a;
+    transform: translateY(-1px);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 80px 0 70px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,209,102,0.1);
+    border: 1px solid rgba(255,209,102,0.3);
+    color: var(--emas);
+    padding: 7px 16px;
+    border-radius: 30px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  .hero-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hijau);
+    box-shadow: 0 0 8px var(--hijau);
+    animation: blink 1.6s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -2px;
+    font-weight: 900;
+    margin-bottom: 22px;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--emas), var(--merah-terang), var(--biru-terang));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+    max-width: 660px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 30px;
+    border-radius: 14px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--emas);
+    color: #1a1a1a;
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-secondary:hover { border-color: var(--emas); color: var(--emas); }
+
+  /* ===== STATS STRIP ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    max-width: 800px;
+    margin: 0 auto 90px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .stat .num {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--emas);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .lbl {
+    font-size: 0.7rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .sec-head {
+    text-align: center;
+    margin-bottom: 44px;
+  }
+  .sec-head .eyebrow {
+    color: var(--emas);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .sec-head h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+  .sec-head p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ===== ABOUT ===== */
+  .about {
+    padding: 40px 0 90px;
+    scroll-margin-top: 90px;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.85;
+    margin-bottom: 16px;
+  }
+  .about-text p strong { color: var(--ink); }
+  .about-text p .hl { color: var(--emas); font-weight: 700; }
+
+  .about-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .hl-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: border-color 0.25s, transform 0.2s;
+  }
+  .hl-card:hover {
+    border-color: var(--emas);
+    transform: translateX(4px);
+  }
+  .hl-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .hl-icon.a { background: rgba(230,57,70,0.15); }
+  .hl-icon.b { background: rgba(42,157,143,0.15); }
+  .hl-icon.c { background: rgba(255,209,102,0.15); }
+
+  .hl-card h4 {
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+  .hl-card p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* ===== FITUR ===== */
+  .fitur {
+    padding: 40px 0 90px;
+    scroll-margin-top: 90px;
+  }
+
+  .fitur-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 26px;
+  }
+
+  .fitur-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    overflow: hidden;
+    transition: transform 0.28s cubic-bezier(0.2,1,0.3,1), box-shadow 0.28s, border-color 0.28s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .fitur-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    border-color: var(--emas);
+  }
+
+  .fitur-cover {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .fitur-cover.badminton {
+    background: linear-gradient(135deg, #2a9d8f, #e63946);
+  }
+  .fitur-cover.remi {
+    background: linear-gradient(135deg, #9b6bcc, #2a9d8f);
+  }
+
+  .fitur-cover .big-icon {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+    z-index: 2;
+    transition: transform 0.3s;
+  }
+  .fitur-card:hover .fitur-cover .big-icon {
+    transform: scale(1.12) rotate(-5deg);
+  }
+
+  .fitur-cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1), transparent 40%);
+  }
+
+  .fitur-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 14px);
+  }
+
+  .fitur-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(15,20,25,0.75);
+    backdrop-filter: blur(6px);
+    color: var(--emas);
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,209,102,0.35);
+    z-index: 3;
+  }
+
+  .fitur-body {
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .fitur-body h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    margin-bottom: 10px;
+  }
+
+  .fitur-body > p {
+    color: var(--muted);
+    font-size: 0.87rem;
+    line-height: 1.65;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+
+  .fitur-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .fitur-features span {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-buka {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .btn-buka:active { transform: scale(0.98); }
+  .btn-buka.badminton {
+    background: var(--biru);
+    color: #fff;
+  }
+  .btn-buka.badminton:hover { filter: brightness(1.12); }
+  .btn-buka.remi {
+    background: var(--ungu);
+    color: #fff;
+  }
+  .btn-buka.remi:hover { filter: brightness(1.12); }
+  .btn-buka .arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+  }
+  .btn-buka:hover .arrow { transform: translateX(4px); }
+
+  /* ===== CTA BAWAH ===== */
+  .cta-bottom {
+    padding: 20px 0 90px;
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, var(--panel), var(--panel2));
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 55px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255,209,102,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-box h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .cta-box p {
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 30px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    position: relative;
+  }
+  .cta-box .hero-cta { position: relative; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 36px 24px;
+    text-align: center;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 0.95rem;
+  }
+  .footer-brand .brand-logo {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+  footer p {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  /* ===== TRANSISI HALAMAN ===== */
+  .page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .page-transition.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 860px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .nav-links {
+      gap: 14px;
+    }
+    .nav-links a:not(.cta) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .nav-inner { padding: 14px 16px; }
+    .hero { padding: 55px 0 45px; }
+    .hero-cta { flex-direction: column; }
+    .btn { justify-content: center; }
+    .cta-box { padding: 40px 24px; }
+    .fitur-body { padding: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Overlay transisi halaman -->
+<div class="page-transition" id="pageTransition"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="brand">
+      <div class="brand-logo">730</div>
+      <div class="brand-text">
+        <strong>Tujuh Tiga Puluh</strong>
+        <small>Community</small>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">Tentang</a></li>
+      <li><a href="#fitur">Fitur</a></li>
+      <li><a href="#fitur" class="cta">Mulai Main →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      House of Sports & Cards
+    </div>
+    <h1>
+      Satu Komunitas,<br>
+      Dua Papan <span class="accent">Skor</span>.
+    </h1>
+    <p>
+      Tujuh Tiga Puluh Community adalah tempat berkumpulnya para pecinta bulu tangkis
+      dan kartu remi. Catat skor, selesaikan pertandingan, dan bangun rivalitas sehat
+      di leaderboard komunitas.
+    </p>
+    <div class="hero-cta">
+      <a href="#fitur" class="btn btn-primary">🚀 Jelajahi Fitur</a>
+      <a href="#about" class="btn btn-secondary">📖 Tentang Kami</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">2</div>
+        <div class="lbl">Papan Skor</div>
+      </div>
+      <div class="stat">
+        <div class="num">21+</div>
+        <div class="lbl">Poin Badminton</div>
+      </div>
+      <div class="stat">
+        <div class="num">8</div>
+        <div class="lbl">Pemain Remi</div>
+      </div>
+      <div class="stat">
+        <div class="num">∞</div>
+        <div class="lbl">Semangat Main</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Tentang Kami</div>
+      <h2>Lebih dari Sekadar Main</h2>
+      <p>Tempat di mana pertandingan bukan hanya soal menang, tapi juga soal cerita dan kebersamaan.</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          <strong>Tujuh Tiga Puluh Community</strong> adalah komunitas kecil yang lahir dari
+          kebiasaan sederhana: kumpul bareng, main bulu tangkis, lalu lanjut main kartu remi
+          sambil ngobrol sampai malam. Nama "730" diambil dari jam kumpul kami — pukul
+          <span class="hl">07.30</span> — saat lapangan mulai sepi dan meja kartu mulai dirindukan.
+        </p>
+        <p>
+          Kami percaya bahwa pertandingan yang seru bukan hanya soal skor akhir. Tapi juga
+          soal <strong>bagaimana kita mencatatnya, merayakannya, dan mengenangnya</strong>.
+          Karena itulah kami membangun dua alat sederhana: papan skor badminton dengan
+          sistem deuce, dan papan skor remi untuk mencatat poin kekalahan.
+        </p>
+        <p>
+          Semuanya <span class="hl">tersimpan otomatis</span> di leaderboard. Tidak perlu
+          buku catatan, tidak perlu hafal siapa yang menang minggu lalu. Cukup buka, main,
+          dan lihat siapa yang benar-benar jago di komunitas ini.
+        </p>
+      </div>
+
+      <div class="about-highlights">
+        <div class="hl-card">
+          <div class="hl-icon a">🏸</div>
+          <div>
+            <h4>Rally Point 21 & Deuce</h4>
+            <p>Sistem skor badminton sesuai aturan BWF, lengkap dengan deuce dan batas 30 poin.</p>
+          </div>
+        </div>
+        <div class="hl-card">
+          <div class="hl-icon b">🃏</div>
+          <div>
+            <h4>Skor Kekalahan Remi</h4>
+            <p>Catat poin kekalahan pemain hingga 8 orang. Poin terkecil = pemenang ronde.</p>
+          </div>
+        </div>
+        <div class="hl-card">
+          <div class="hl-icon c">🏆</div>
+          <div>
+            <h4>Leaderboard Permanen</h4>
+            <p>Semua hasil tersimpan otomatis di browser. Siapa unggul? Papan yang menjawab.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FITUR ===== -->
+<section class="fitur" id="fitur">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Fitur Kami</div>
+      <h2>Pilih Permainanmu</h2>
+      <p>Dua papan skor, satu tujuan: mengabadikan setiap pertandingan.</p>
+    </div>
+
+    <div class="fitur-grid">
+      <!-- KARTU BADMINTON -->
+      <div class="fitur-card">
+        <div class="fitur-cover badminton">
+          <div class="fitur-badge">Single & Double</div>
+          <div class="big-icon">🏸</div>
+        </div>
+        <div class="fitur-body">
+          <h3>Papan Skor Badminton</h3>
+          <p>
+            Hitung skor rally point 21 dengan sistem deuce otomatis. Mendukung mode
+            single dan double, lengkap dengan riwayat set dan leaderboard tim.
+          </p>
+          <div class="fitur-features">
+            <span>Rally 21</span>
+            <span>Deuce</span>
+            <span>Best of 3</span>
+            <span>Single / Double</span>
+            <span>Leaderboard</span>
+          </div>
+          <a href="badminton.html" class="btn-buka badminton" onclick="navigasiKe(event, 'badminton.html')">
+            <span>Buka Skor Badminton</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- KARTU REMI -->
+      <div class="fitur-card">
+        <div class="fitur-cover remi">
+          <div class="fitur-badge">2 – 8 Pemain</div>
+          <div class="big-icon">🃏</div>
+        </div>
+        <div class="fitur-body">
+          <h3>Papan Skor Kartu Remi</h3>
+          <p>
+            Catat poin kekalahan setiap pemain — misal A kalah = 1 poin.
+            Pemain dengan poin terkecil menjadi pemenang ronde. Simpan otomatis
+            ke leaderboard.
+          </p>
+          <div class="fitur-features">
+            <span>2–8 Pemain</span>
+            <span>Poin Kekalahan</span>
+            <span>Pemenang Ronde</span>
+            <span>Leaderboard</span>
+            <span>Auto-Save</span>
+          </div>
+          <a href="remi.html" class="btn-buka remi" onclick="navigasiKe(event, 'remi.html')">
+            <span>Buka Skor Remi</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA BAWAH ===== -->
+<section class="cta-bottom">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>Siap Mencatat Kemenangan?</h2>
+      <p>Pilih papan skornya, mainkan pertandingannya, dan lihat siapa yang layak masuk jajaran teratas.</p>
+      <div class="hero-cta">
+        <a href="badminton.html" class="btn btn-primary" onclick="navigasiKe(event, 'badminton.html')">🏸 Main Badminton</a>
+        <a href="remi.html" class="btn btn-secondary" onclick="navigasiKe(event, 'remi.html')">🃏 Main Remi</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="brand-logo">730</div>
+      <span>Tujuh Tiga Puluh Community</span>
+    </div>
+    <p>© 2026 · House of Sports & Cards · Dibuat oleh komunitas, untuk komunitas.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   NAVIGASI HALAMAN SAMA (tanpa tab baru)
+   Dengan animasi transisi halus
+   ============================================================ */
+function navigasiKe(event, url) {
+  event.preventDefault();
+
+  const overlay = document.getElementById('pageTransition');
+  overlay.classList.add('active');
+
+  setTimeout(() => {
+    window.location.href = url;
+  }, 250);
+}
+
+// Saat halaman dimuat, fade out overlay
+window.addEventListener('pageshow', function() {
+  const overlay = document.getElementById('pageTransition');
+  if (overlay) overlay.classList.remove('active');
+});
+</script>
+</body>
+</html>

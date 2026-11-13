@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skor Badminton — Single & Double</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f1419;
+    --panel: #1a222c;
+    --panel2: #232d3a;
+    --line: #2f3b4a;
+    --ink: #e8eef5;
+    --muted: #8899aa;
+    --merah: #e63946;
+    --merah-terang: #ff4d5e;
+    --biru: #2a9d8f;
+    --biru-terang: #2ec4b6;
+    --emas: #ffd166;
+    --hijau: #06d6a0;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(230,57,70,0.08), transparent 40%),
+      radial-gradient(circle at 80% 100%, rgba(42,157,143,0.08), transparent 40%);
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    padding: 20px 0 28px;
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing: -1px;
+    font-weight: 800;
+  }
+  header h1 .icon { color: var(--emas); }
+  header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
+
+  .kontrol-atas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 26px;
+  }
+
+  .mode-group {
+    display: flex;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 10px 22px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .mode-btn:hover { color: var(--ink); }
+  .mode-btn.active {
+    background: var(--emas);
+    color: #1a1a1a;
+  }
+
+  .btn-reset {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover {
+    border-color: var(--merah);
+    color: var(--merah-terang);
+  }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+
+  .tim {
+    padding: 30px 26px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .tim.tim-a { border-right: 1px solid var(--line); }
+
+  .tim.serve::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--emas);
+    box-shadow: 0 0 14px var(--emas);
+  }
+
+  .tim-a.serve::after { background: var(--merah-terang); box-shadow: 0 0 14px var(--merah-terang); }
+  .tim-b.serve::after { background: var(--biru-terang); box-shadow: 0 0 14px var(--biru-terang); }
+
+  .tim-nama {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .tim-nama input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    color: var(--ink);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 4px 0;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .tim-nama input:focus {
+    outline: none;
+    border-bottom-color: var(--line);
+  }
+
+  .tim-a .tim-nama input { color: var(--merah-terang); }
+  .tim-b .tim-nama input { color: var(--biru-terang); }
+
+  .serve-badge {
+    background: var(--emas);
+    color: #1a1a1a;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .tim.serve .serve-badge { opacity: 1; }
+  .tim-a.serve .serve-badge { background: var(--merah-terang); color: #fff; }
+  .tim-b.serve .serve-badge { background: var(--biru-terang); color: #fff; }
+
+  .skor-besar {
+    font-size: clamp(4rem, 12vw, 7rem);
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+    letter-spacing: -4px;
+    margin: 8px 0 18px;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.15s;
+  }
+  .tim-a .skor-besar { color: var(--merah-terang); }
+  .tim-b .skor-besar { color: var(--biru-terang); }
+
+  .skor-besar.pop { animation: pop 0.25s ease; }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1); }
+  }
+
+  .poin-btn {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-plus {
+    flex: 1;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.1s, filter 0.15s;
+  }
+  .btn-plus:active { transform: scale(0.96); }
+
+  .tim-a .btn-plus { background: var(--merah); color: #fff; }
+  .tim-a .btn-plus:hover { filter: brightness(1.15); }
+  .tim-b .btn-plus { background: var(--biru); color: #fff; }
+  .tim-b .btn-plus:hover { filter: brightness(1.15); }
+
+  .btn-minus {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    width: 54px;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-minus:hover { border-color: var(--merah); color: var(--merah-terang); }
+
+  .tengah {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    background: var(--panel2);
+    min-width: 130px;
+    gap: 10px;
+  }
+
+  .set-info {
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .set-ke {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--emas);
+  }
+  .status-mode {
+    font-size: 0.68rem;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(255,209,102,0.12);
+    color: var(--emas);
+    border: 1px solid rgba(255,209,102,0.3);
+  }
+  .status-mode.deuce {
+    background: rgba(230,57,70,0.15);
+    color: var(--merah-terang);
+    border-color: rgba(230,57,70,0.4);
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .riwayat-set {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .set-chip {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .set-chip .a { color: var(--merah-terang); }
+  .set-chip .b { color: var(--biru-terang); }
+  .set-chip .vs { color: var(--muted); font-size: 0.7rem; }
+
+  .lb-section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .lb-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 26px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .lb-head h2 {
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lb-head h2 .trophy { color: var(--emas); }
+  .lb-head .info {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .lb-list { padding: 8px 14px 14px; }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 44px 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 12px;
+    border-radius: 12px;
+    transition: background 0.15s;
+  }
+  .lb-row:hover { background: var(--panel2); }
+  .lb-row + .lb-row { border-top: 1px solid var(--line); }
+
+  .lb-rank {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.9rem;
+    background: var(--panel2);
+    color: var(--muted);
+  }
+  .lb-rank.gold { background: linear-gradient(135deg,#ffd166,#f4a825); color:#1a1a1a; box-shadow:0 0 16px rgba(255,209,102,0.4); }
+  .lb-rank.silver { background: linear-gradient(135deg,#c9d3dd,#96a3b0); color:#1a1a1a; }
+  .lb-rank.bronze { background: linear-gradient(135deg,#d29a6a,#a96f3f); color:#1a1a1a; }
+
+  .lb-nama {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .lb-nama small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .lb-skor {
+    font-weight: 900;
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--emas);
+  }
+
+  .lb-hasil {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .lb-hasil.menang { background: rgba(6,214,160,0.15); color: var(--hijau); }
+  .lb-hasil.kalah { background: rgba(136,153,170,0.12); color: var(--muted); }
+
+  .lb-kosong {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .btn-hapus-lb {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .btn-hapus-lb:hover { border-color: var(--merah); color: var(--merah-terang); }
+
+  .lb-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    color: var(--hijau);
+    font-weight: 600;
+  }
+  .lb-status .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--hijau);
+    box-shadow: 0 0 6px var(--hijau);
+    animation: blink 1.6s infinite;
+  }
+  .lb-status.offline { color: var(--muted); }
+  .lb-status.offline .dot { background: var(--muted); box-shadow: none; animation: none; }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,11,15,0.78);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 40px 34px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    animation: naik 0.35s cubic-bezier(0.2,1,0.3,1);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  @keyframes naik {
+    from { opacity: 0; transform: translateY(30px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal .trophy-big {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+    animation: bounce 1s infinite;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .modal h3 {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .modal .pemenang {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .modal .skor-akhir {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--emas);
+    margin-bottom: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .modal .rincian-set {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 26px;
+    text-align: left;
+  }
+  .modal .rincian-set .baris {
+    display: flex;
+    justify-content: space-between;
+    background: var(--panel2);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+  }
+  .modal .rincian-set .baris strong { color: var(--emas); }
+
+  .modal .aksi {
+    display: flex;
+    gap: 10px;
+  }
+  .modal .aksi button {
+    flex: 1;
+    padding: 13px;
+    border-radius: 12px;
+    border: none;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+  .modal .aksi .utama { background: var(--emas); color: #1a1a1a; }
+  .modal .aksi .utama:hover { filter: brightness(1.1); }
+  .modal .aksi .sekunder {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .modal .aksi .sekunder:hover { color: var(--ink); border-color: var(--muted); }
+
+  @media (max-width: 680px) {
+    body { padding: 12px; }
+    .scoreboard { grid-template-columns: 1fr; }
+    .tim.tim-a { border-right: none; border-bottom: 1px solid var(--line); }
+    .tengah {
+      flex-direction: row;
+      min-width: unset;
+      padding: 16px;
+      gap: 16px;
+    }
+    .skor-besar { font-size: 4.5rem; }
+    .lb-row { grid-template-columns: 36px 1fr auto; gap: 10px; }
+    .lb-hasil { display: none; }
+    .modal { padding: 30px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1><span class="icon">🏸</span> Skor Badminton</h1>
+    <p>Rally Point 21 · Sistem Deuce · Leaderboard Online</p>
+  </header>
+
+  <div class="kontrol-atas">
+    <div class="mode-group">
+      <button class="mode-btn active" data-mode="single" onclick="gantiMode('single')">Single</button>
+      <button class="mode-btn" data-mode="double" onclick="gantiMode('double')">Double</button>
+    </div>
+    <button class="btn-reset" onclick="resetPertandingan(true)">↻ Reset Pertandingan</button>
+  </div>
+
+  <div class="scoreboard">
+    <div class="tim tim-a serve" id="timA">
+      <div class="tim-nama">
+        <input type="text" id="namaA" value="Pemain A" maxlength="20">
+        <span class="serve-badge">SERVE</span>
+      </div>
+      <div class="skor-besar" id="skorA">0</div>
+      <div class="poin-btn">
+        <button class="btn-plus" onclick="tambahPoin('A')">+ POIN</button>
+        <button class="btn-minus" onclick="kurangiPoin('A')">−</button>
+      </div>
+    </div>
+
+    <div class="tengah">
+      <div class="set-info">Set</div>
+      <div class="set-ke" id="setKe">1</div>
+      <div class="status-mode" id="statusMode">Mode Normal</div>
+    </div>
+
+    <div class="tim tim-b" id="timB">
+      <div class="tim-nama">
+        <input type="text" id="namaB" value="Pemain B" maxlength="20">
+        <span class="serve-badge">SERVE</span>
+      </div>
+      <div class="skor-besar" id="skorB">0</div>
+      <div class="poin-btn">
+        <button class="btn-plus" onclick="tambahPoin('B')">+ POIN</button>
+        <button class="btn-minus" onclick="kurangiPoin('B')">−</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="riwayat-set" id="riwayatSet"></div>
+
+  <div class="lb-section">
+    <div class="lb-head">
+      <h2><span class="trophy">🏆</span> Leaderboard</h2>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <span class="lb-status offline" id="lbStatus">
+          <span class="dot"></span>
+          <span id="lbStatusText">Menghubungkan…</span>
+        </span>
+        <span class="info" id="lbInfo">Memuat data…</span>
+        <button class="btn-hapus-lb" onclick="hapusLeaderboard()">Hapus Semua</button>
+      </div>
+    </div>
+    <div class="lb-list" id="lbList">
+      <div class="lb-kosong">Memuat leaderboard dari server…</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="overlay" id="overlayMenang">
+  <div class="modal">
+    <div class="trophy-big">🏆</div>
+    <h3>Pemenang Pertandingan</h3>
+    <div class="pemenang" id="modalPemenang">—</div>
+    <div class="skor-akhir" id="modalSkor">—</div>
+    <div class="rincian-set" id="modalRincian"></div>
+    <div class="aksi">
+      <button class="sekunder" onclick="tutupModal()">Lihat Skor</button>
+      <button class="utama" onclick="mainLagi()">Main Lagi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FIREBASE MODULAR SDK ===== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCMbSHhOoZ8Mtj6qaXYS2FU_3SNG09c700",
+    authDomain: "ttc-comunity.firebaseapp.com",
+    databaseURL: "https://ttc-comunity-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "ttc-comunity",
+    storageBucket: "ttc-comunity.firebasestorage.app",
+    messagingSenderId: "48224991582",
+    appId: "1:48224991582:web:11c0aba37ef14a83cbf7cf"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Ekspos ke window agar bisa dipakai script utama
+  window.fb = {
+    db,
+    ref,
+    onValue,
+    set,
+    remove,
+    ready: true
+  };
+
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- ===== SCRIPT UTAMA ===== -->
+<script>
+/* ============================================================
+   ATURAN BADMINTON (Rally Point 21 + Deuce)
+   ============================================================ */
+const POIN_NORMAL = 21;
+const POIN_DEUCE_MULAI = 20;
+const POIN_MAKSIMAL = 30;
+const SET_MENANG = 2;
+
+let state = {
+  mode: 'single',
+  skorA: 0,
+  skorB: 0,
+  setA: 0,
+  setB: 0,
+  setKe: 1,
+  serve: 'A',
+  riwayatSet: [],
+  selesai: false,
+  isDeuce: false
+};
+
+let leaderboard = [];
+let fbListenerAttached = false;
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render() {
+  document.getElementById('skorA').textContent = state.skorA;
+  document.getElementById('skorB').textContent = state.skorB;
+  document.getElementById('setKe').textContent = state.setKe;
+
+  document.getElementById('timA').classList.toggle('serve', state.serve === 'A');
+  document.getElementById('timB').classList.toggle('serve', state.serve === 'B');
+
+  const statusEl = document.getElementById('statusMode');
+  if (state.isDeuce) {
+    statusEl.textContent = 'DEUCE';
+    statusEl.classList.add('deuce');
+  } else {
+    statusEl.textContent = 'Mode Normal';
+    statusEl.classList.remove('deuce');
+  }
+
+  renderRiwayatSet();
+  renderLeaderboard();
+}
+
+function renderRiwayatSet() {
+  const el = document.getElementById('riwayatSet');
+  if (state.riwayatSet.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = state.riwayatSet.map((s, i) => `
+    <div class="set-chip">
+      <span>Set ${i + 1}</span>
+      <span class="a">${s.skorA}</span>
+      <span class="vs">–</span>
+      <span class="b">${s.skorB}</span>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   LOGIKA POIN
+   ============================================================ */
+function tambahPoin(tim) {
+  if (state.selesai) return;
+
+  if (tim === 'A') state.skorA++;
+  else state.skorB++;
+
+  state.serve = tim;
+
+  const el = document.getElementById(tim === 'A' ? 'skorA' : 'skorB');
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+
+  cekDeuce();
+  cekSetSelesai();
+
+  render();
+}
+
+function kurangiPoin(tim) {
+  if (state.selesai) return;
+  if (tim === 'A' && state.skorA > 0) state.skorA--;
+  else if (tim === 'B' && state.skorB > 0) state.skorB--;
+  cekDeuce();
+  render();
+}
+
+function cekDeuce() {
+  const a = state.skorA, b = state.skorB;
+  state.isDeuce = a >= POIN_DEUCE_MULAI && b >= POIN_DEUCE_MULAI && Math.abs(a - b) < 2;
+}
+
+function cekSetSelesai() {
+  const a = state.skorA, b = state.skorB;
+  let pemenangSet = null;
+
+  if (a >= POIN_NORMAL || b >= POIN_NORMAL) {
+    if (Math.abs(a - b) >= 2) {
+      pemenangSet = a > b ? 'A' : 'B';
+    }
+  }
+
+  if (a >= POIN_MAKSIMAL || b >= POIN_MAKSIMAL) {
+    if (Math.abs(a - b) >= 2 || a === POIN_MAKSIMAL || b === POIN_MAKSIMAL) {
+      pemenangSet = a > b ? 'A' : 'B';
+    }
+  }
+
+  if (pemenangSet) selesaikanSet(pemenangSet);
+}
+
+function selesaikanSet(pemenang) {
+  state.riwayatSet.push({
+    skorA: state.skorA,
+    skorB: state.skorB,
+    pemenang: pemenang
+  });
+
+  if (pemenang === 'A') state.setA++;
+  else state.setB++;
+
+  if (state.setA >= SET_MENANG || state.setB >= SET_MENANG) {
+    state.selesai = true;
+    simpanKeLeaderboard();
+    tampilkanModalPemenang();
+  } else {
+    state.setKe++;
+    state.skorA = 0;
+    state.skorB = 0;
+    state.isDeuce = false;
+    state.serve = state.setKe % 2 === 1 ? 'A' : 'B';
+  }
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function tampilkanModalPemenang() {
+  const namaA = document.getElementById('namaA').value || 'Pemain A';
+  const namaB = document.getElementById('namaB').value || 'Pemain B';
+  const pemenang = state.setA > state.setB ? namaA : namaB;
+  const skorSet = state.setA > state.setB ? `${state.setA} - ${state.setB}` : `${state.setB} - ${state.setA}`;
+
+  document.getElementById('modalPemenang').textContent = pemenang;
+  document.getElementById('modalPemenang').style.color = state.setA > state.setB ? 'var(--merah-terang)' : 'var(--biru-terang)';
+  document.getElementById('modalSkor').textContent = `Sets: ${skorSet}`;
+
+  document.getElementById('modalRincian').innerHTML = state.riwayatSet.map((s, i) => `
+    <div class="baris">
+      <span>Set ${i + 1}</span>
+      <strong>${s.skorA} – ${s.skorB}</strong>
+      <span style="color:var(--muted);font-size:0.75rem;">
+        ${s.pemenang === 'A' ? namaA : namaB}
+      </span>
+    </div>
+  `).join('');
+
+  document.getElementById('overlayMenang').classList.add('open');
+}
+
+function tutupModal() {
+  document.getElementById('overlayMenang').classList.remove('open');
+}
+
+function mainLagi() {
+  tutupModal();
+  resetPertandingan(false);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetPertandingan(konfirmasi) {
+  if (konfirmasi && (state.skorA > 0 || state.skorB > 0 || state.setA > 0 || state.setB > 0)) {
+    if (!confirm('Reset pertandingan saat ini? Skor yang belum selesai akan hilang.')) return;
+  }
+
+  state = {
+    mode: state.mode,
+    skorA: 0, skorB: 0,
+    setA: 0, setB: 0,
+    setKe: 1, serve: 'A',
+    riwayatSet: [],
+    selesai: false, isDeuce: false
+  };
+
+  document.getElementById('overlayMenang').classList.remove('open');
+  render();
+}
+
+function gantiMode(mode) {
+  if (state.mode === mode) return;
+  if (state.skorA > 0 || state.skorB > 0) {
+    if (!confirm('Ganti mode akan mereset pertandingan. Lanjutkan?')) return;
+  }
+
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+
+  document.getElementById('namaA').value = mode === 'single' ? 'Pemain A' : 'Tim A';
+  document.getElementById('namaB').value = mode === 'single' ? 'Pemain B' : 'Tim B';
+
+  resetPertandingan(false);
+}
+
+/* ============================================================
+   LEADERBOARD — FIREBASE REALTIME
+   ============================================================ */
+function setLbStatus(online) {
+  const el = document.getElementById('lbStatus');
+  const text = document.getElementById('lbStatusText');
+  if (online) {
+    el.classList.remove('offline');
+    text.textContent = 'Tersinkron online';
+  } else {
+    el.classList.add('offline');
+    text.textContent = 'Offline';
+  }
+}
+
+function simpanKeLeaderboard() {
+  const namaA = document.getElementById('namaA').value || 'Pemain A';
+  const namaB = document.getElementById('namaB').value || 'Pemain B';
+
+  const menang = state.setA > state.setB ? namaA : namaB;
+  const kalah = state.setA > state.setB ? namaB : namaA;
+  const skorMenang = state.setA > state.setB ? state.setA : state.setB;
+  const skorKalah = state.setA > state.setB ? state.setB : state.setA;
+
+  const tanggal = new Date().toLocaleString('id-ID', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const newEntries = [
+    { nama: menang, hasil: 'menang', setMenang: skorMenang, setKalah: skorKalah, mode: state.mode, tanggal },
+    { nama: kalah, hasil: 'kalah', setMenang: skorKalah, setKalah: skorMenang, mode: state.mode, tanggal }
+  ];
+
+  const dataBaru = [...leaderboard, ...newEntries];
+
+  if (window.fb && window.fb.ready) {
+    window.fb.set(window.fb.ref(window.fb.db, 'badminton/leaderboard'), dataBaru)
+      .then(() => setLbStatus(true))
+      .catch(err => {
+        console.error('Gagal simpan ke Firebase:', err);
+        setLbStatus(false);
+        alert('Gagal menyimpan ke server. Periksa koneksi internet Anda.');
+      });
+  } else {
+    alert('Firebase belum siap. Tunggu beberapa detik dan coba lagi.');
+  }
+}
+
+function renderLeaderboard() {
+  const el = document.getElementById('lbList');
+  const info = document.getElementById('lbInfo');
+
+  if (!leaderboard || leaderboard.length === 0) {
+    el.innerHTML = '<div class="lb-kosong">Leaderboard masih kosong. Selesaikan pertandingan untuk mengisi.</div>';
+    info.textContent = 'Belum ada pertandingan selesai';
+    return;
+  }
+
+  const rekap = {};
+  leaderboard.forEach(r => {
+    if (!rekap[r.nama]) {
+      rekap[r.nama] = { nama: r.nama, menang: 0, kalah: 0, poin: 0, totalSetMenang: 0 };
+    }
+    if (r.hasil === 'menang') {
+      rekap[r.nama].menang++;
+      rekap[r.nama].poin += 3;
+      rekap[r.nama].totalSetMenang += (r.setMenang || 0);
+    } else {
+      rekap[r.nama].kalah++;
+      rekap[r.nama].poin += 1;
+    }
+  });
+
+  const daftar = Object.values(rekap)
+    .sort((x, y) => y.poin - x.poin || y.menang - x.menang || x.nama.localeCompare(y.nama));
+
+  info.textContent = `${daftar.length} tim · ${Math.floor(leaderboard.length / 2)} pertandingan`;
+
+  el.innerHTML = daftar.map((d, i) => {
+    let rankClass = '';
+    if (i === 0) rankClass = 'gold';
+    else if (i === 1) rankClass = 'silver';
+    else if (i === 2) rankClass = 'bronze';
+
+    return `
+      <div class="lb-row">
+        <div class="lb-rank ${rankClass}">${i + 1}</div>
+        <div class="lb-nama">
+          ${escapeHtml(d.nama)}
+          <small>${d.menang}M · ${d.kalah}K · ${d.totalSetMenang} set menang</small>
+        </div>
+        <div class="lb-skor">${d.poin} pts</div>
+        <div class="lb-hasil ${d.menang >= d.kalah ? 'menang' : 'kalah'}">
+          ${d.menang >= d.kalah ? 'UNGGUL' : 'TERTINGGAL'}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function hapusLeaderboard() {
+  if (!leaderboard || leaderboard.length === 0) return;
+  if (!confirm('Hapus semua data leaderboard di server? Semua pengguna akan melihat leaderboard kosong. Tindakan ini tidak bisa dibatalkan.')) return;
+
+  if (window.fb && window.fb.ready) {
+    window.fb.remove(window.fb.ref(window.fb.db, 'badminton/leaderboard'))
+      .then(() => {
+        leaderboard = [];
+        renderLeaderboard();
+        alert('Leaderboard berhasil dihapus dari server.');
+      })
+      .catch(err => {
+        console.error('Gagal hapus:', err);
+        alert('Gagal menghapus dari server. Coba lagi.');
+      });
+  } else {
+    alert('Firebase belum siap.');
+  }
+}
+
+/* ============================================================
+   LISTENER FIREBASE (Realtime Sync)
+   ============================================================ */
+function mulaiListenerFirebase() {
+  if (!window.fb || !window.fb.ready) {
+    window.addEventListener('firebase-ready', mulaiListenerFirebase, { once: true });
+    return;
+  }
+  if (fbListenerAttached) return;
+  fbListenerAttached = true;
+
+  const lbRef = window.fb.ref(window.fb.db, 'badminton/leaderboard');
+  window.fb.onValue(lbRef, (snapshot) => {
+    const data = snapshot.val();
+    leaderboard = data || [];
+    setLbStatus(true);
+    renderLeaderboard();
+  }, (error) => {
+    console.error('Listener error:', error);
+    setLbStatus(false);
+  });
+}
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ============================================================
+   KEYBOARD SHORTCUT
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key === 'a' || e.key === 'A' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    tambahPoin('A');
+  } else if (e.key === 'b' || e.key === 'B' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    tambahPoin('B');
+  } else if (e.key === 'Escape') {
+    tutupModal();
+  }
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+render();
+mulaiListenerFirebase();
+</script>
+</body>
+</html>
